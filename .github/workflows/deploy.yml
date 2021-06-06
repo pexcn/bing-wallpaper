@@ -19,7 +19,7 @@ env:
   TZ: Asia/Taipei
 
 jobs:
-  build:
+  download:
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout
@@ -30,8 +30,8 @@ jobs:
         if: ${{ github.event_name == 'schedule' || github.event.inputs.deploy == '1' }}
         run: |
           # update gh-pages
-          git clone https://github.com/${{ github.repository }}.git -b gh-pages --depth 1 --single-branch dist
-          cp -rf dist/* dist
+          git clone https://github.com/${{ github.repository }}.git -b gh-pages --depth 1 --single-branch gh-pages
+          cp -rf dist/* gh-pages
           # push to gh-pages
           cd gh-pages
           git config user.name github-actions[bot]
