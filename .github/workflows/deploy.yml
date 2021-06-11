@@ -6,8 +6,8 @@ on:
   pull_request:
     branches: master
   schedule:
-    # workwaround for cannot set timezone, cron will start on Asia/Taipei 22:00
-    - cron: "0 16 * * *"
+    # workwaround for cannot set timezone, cron will start on Asia/Taipei 23:00
+    - cron: "0 17 * * *"
   workflow_dispatch:
     inputs:
       deploy:
