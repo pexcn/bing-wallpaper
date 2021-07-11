@@ -6,7 +6,7 @@ on:
   pull_request:
     branches: master
   schedule:
-    # workwaround for cannot set timezone, cron will start on Asia/Taipei 21:00
+    # workwaround for cannot set timezone, cron will start on UTC+8 21:00
     - cron: "0 15 * * *"
   workflow_dispatch:
     inputs:
@@ -24,6 +24,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      - name: Prepare
+        run: sudo apt-get install curl wget jq git -y --no-install-recommends
       - name: Download
         run: ./download.sh
       - name: Deploy
