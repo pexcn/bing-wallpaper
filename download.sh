@@ -54,8 +54,8 @@ move_to_dir() {
   local filename="$(cat info.json | jq -r '.startdate')"
   local suffix="${url4suffix##*.}"
   local target_path=$(echo $filename | xargs date "+%Y/%m/%d" -d)
-  mkdir -p $target_path
-  mv -v info*.json *${suffix} $target_path
+  mkdir -p dist/$target_path
+  mv -v info*.json *${suffix} dist/$target_path
 }
 
 fetch_json
