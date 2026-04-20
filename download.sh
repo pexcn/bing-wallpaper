@@ -49,6 +49,16 @@ dl_wallpaper() {
   fi
 }
 
+dl_latest() {
+  local full_url=$(_get_image_url info.json)
+  local base_url="${full_url%_UHD*}"
+  local suffix="${full_url##*.}"
+  mkdir -p dist
+  wget "${base_url}_UHD.${suffix}" -O dist/latest.${suffix}
+  wget "${base_url}_1920x1080.${suffix}" -O dist/latest-desktop.${suffix}
+  wget "${base_url}_768x1280.${suffix}" -O dist/latest-mobile.${suffix}
+}
+
 move_to_dir() {
   local url4suffix=$(_get_image_url info.json)
   local filename="$(cat info.json | jq -r '.startdate')"
@@ -60,4 +70,5 @@ move_to_dir() {
 
 fetch_json
 dl_wallpaper
+dl_latest
 move_to_dir
