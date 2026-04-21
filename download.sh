@@ -25,8 +25,9 @@ _get_image_filename() {
 
 _keep_latest_image() {
   local image="$1"
+  # when upgrading to imagemagick 7, need to switch to the `magick` command.
   local blur_edge="$(
-    magick "$image" \
+    convert "$image" \
       -colorspace Gray \
       -blur 0x4 \
       -evaluate multiply 0.6 \
