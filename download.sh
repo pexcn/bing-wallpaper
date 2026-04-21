@@ -23,6 +23,26 @@ _get_image_filename() {
   [ $is_zh == 0 ] && echo ${filename}.${suffix} || echo ${filename}-zh.${suffix}
 }
 
+_keep_latest_image() {
+  local image="$1"
+  local blur_edge="$(
+    magick "$image" \
+      -colorspace Gray \
+      -blur 0x4 \
+      -evaluate multiply 0.6 \
+      -canny 0x1+12%+35% \
+      -threshold 1% \
+      -format '%[fx:mean]' info:
+  )" || return 1
+
+  awk -v x="$blur_edge" '
+    BEGIN {
+      if (x < 0.018) exit 0;
+      else exit 1;
+    }
+  '
+}
+
 fetch_json() {
   local api="https://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1&uhd=1&setmkt=en-us&ensearch=1"
   local api_zh="https://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1&uhd=1&setmkt=zh-cn"
@@ -57,6 +77,8 @@ dl_latest() {
   wget "${base_url}_UHD.${suffix}" -O dist/latest.${suffix}
   wget "${base_url}_1920x1080.${suffix}" -O dist/latest-desktop.${suffix}
   wget "${base_url}_768x1280.${suffix}" -O dist/latest-mobile.${suffix}
+
+  _keep_latest_image dist/latest-desktop.${suffix} || rm dist/latest*${suffix}
 }
 
 move_to_dir() {
