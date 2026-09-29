@@ -79,7 +79,7 @@ dl_latest() {
   wget "${base_url}_1920x1080.${suffix}" -O dist/latest-desktop.${suffix}
   wget "${base_url}_768x1280.${suffix}" -O dist/latest-mobile.${suffix}
 
-  _keep_latest_image dist/latest-desktop.${suffix} || rm dist/latest*${suffix}
+  #_keep_latest_image dist/latest-desktop.${suffix} || rm dist/latest*${suffix}
 }
 
 move_to_dir() {
