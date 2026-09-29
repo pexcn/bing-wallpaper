@@ -22,15 +22,31 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
       - name: Prepare
-        run: sudo apt-get install curl wget jq git -y --no-install-recommends
+        run: sudo apt-get install curl wget jq git git-lfs -y --no-install-recommends
       - name: Download
         run: ./download.sh
+      - name: Archive
+        if: ${{ github.event_name == 'schedule' || github.event.inputs.deploy == '1' }}
+        run: |
+          # update archive
+          git lfs install --skip-repo
+          GIT_LFS_SKIP_SMUDGE=1 git clone https://github.com/${{ github.repository }}.git -b archive --depth 1 --single-branch archive
+          mkdir -p archive/$(date +%Y/%m)
+          cp -r dist/$(date +%Y/%m/%d) archive/$(date +%Y/%m)/
+          # push to archive
+          cd archive
+          git lfs install --local
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add .
+          git commit -m "$(date +%Y%m%d)" || true
+          git push https://${{ github.repository_owner }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git archive
       - name: Deploy
         if: ${{ github.event_name == 'schedule' || github.event.inputs.deploy == '1' }}
         run: |
           # update gh-pages
           git clone https://github.com/${{ github.repository }}.git -b gh-pages --depth 1 --single-branch gh-pages
-          cp -rf dist/* gh-pages
+          cp -f dist/latest* gh-pages
           # push to gh-pages
           cd gh-pages
           git config user.name github-actions[bot]
