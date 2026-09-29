@@ -8,9 +8,10 @@ on:
   workflow_dispatch:
     inputs:
       deploy:
-        description: 'Whether to deploy to gh-pages branch'
-        required: true
-        default: '0'
+        description: Deploy to gh-pages branch
+        required: false
+        type: boolean
+        default: false
 
 env:
   TZ: Asia/Taipei
@@ -26,7 +27,7 @@ jobs:
       - name: Download
         run: ./download.sh
       - name: Archive
-        if: ${{ github.event_name == 'schedule' || github.event.inputs.deploy == '1' }}
+        if: ${{ github.event_name == 'schedule' || inputs.deploy }}
         run: |
           # update archive
           git lfs install --skip-repo
@@ -42,7 +43,7 @@ jobs:
           git commit -m "$(date +%Y%m%d)" || true
           git push https://${{ github.repository_owner }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git archive
       - name: Deploy
-        if: ${{ github.event_name == 'schedule' || github.event.inputs.deploy == '1' }}
+        if: ${{ github.event_name == 'schedule' || inputs.deploy }}
         run: |
           # update gh-pages
           git clone https://github.com/${{ github.repository }}.git -b gh-pages --depth 1 --single-branch gh-pages
