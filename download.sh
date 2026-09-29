@@ -45,8 +45,8 @@ _keep_latest_image() {
 }
 
 fetch_json() {
-  local api="https://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1&uhd=1&setmkt=en-us&ensearch=1"
-  local api_zh="https://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1&uhd=1&setmkt=zh-cn"
+  local api="https://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1&uhd=1&setmkt=en-US"
+  local api_zh="https://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1&uhd=1&setmkt=zh-CN"
   curl -sSL $api | jq -r '.images[0]' > info.json
   curl -sSL $api_zh | jq -r '.images[0]' > info-zh.json
 }
