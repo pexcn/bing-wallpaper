@@ -32,8 +32,7 @@ jobs:
           # update archive
           git lfs install --skip-repo
           GIT_LFS_SKIP_SMUDGE=1 git clone https://github.com/${{ github.repository }}.git -b archive --depth 1 --single-branch archive
-          mkdir -p archive/$(date +%Y/%m)
-          cp -r dist/$(date +%Y/%m/%d) archive/$(date +%Y/%m)/
+          cp -r dist/[0-9][0-9][0-9][0-9] archive/
           # push to archive
           cd archive
           git lfs install --local
